@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include "font.h"
 
-#define SCREEN_WIDTH 640	//window height
-#define SCREEN_HEIGHT 480	//window width
-#define STRIPS 100			//the number of streams of text scrolling down the screen
+#define SCREEN_WIDTH 1280	//window height
+#define SCREEN_HEIGHT 720	//window width
+#define STRIPS 250			//the number of streams of text scrolling down the screen
 #define SCALE 1 			//the scale at which each char in the stream is rendered
 #define V_GAP .8			//the vertical gap between chars in the stream
 
@@ -138,6 +138,8 @@ void vert_txt(char *str, int x, int y) {
 	int char_height = get_char_height();
 	int length = strlen(str);
 	
+	SDL_SetTextureColorMod(font_t, 20, 160, 20);
+	
 	for (i = 0; i < length; i++) {
 		
 		float tail = (float) i / length;
@@ -146,12 +148,13 @@ void vert_txt(char *str, int x, int y) {
 		if (tail <= .4) {
 			
 			float grad = (float) i / (length * .4);
-			SDL_SetTextureColorMod(font_t, 20, 160 * grad, 20);
-	
-		} else {
-		
-			SDL_SetTextureColorMod(font_t, 20, 160, 20);
 			
+			if (i == 0 ) {
+					
+				grad = .15;
+			}
+			
+			SDL_SetTextureAlphaMod(font_t, 255 * grad);
 		}
 		
 		//draw the last element a different colour
