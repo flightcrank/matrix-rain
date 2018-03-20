@@ -10,4 +10,4 @@ Compilation instructions are as follows
     gcc main.c font.c `sdl2-config --cflags --libs` -o matrix-rain
 	
 ## Images 
-![animation](https://i.imgur.com/lgszAqv.gif)
+![animation](https://i.imgur.com/eymQH3q.gif)

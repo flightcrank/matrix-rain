@@ -9,9 +9,9 @@
 
 #define SCREEN_WIDTH 640	//window height
 #define SCREEN_HEIGHT 480	//window width
-#define STRIPS 150			//the number of streams of text scrolling down the screen
-#define SCALE .6			//the scale at which each char in the stream is rendered
-#define V_GAP .7			//the vertical gap between chars in the stream
+#define STRIPS 100			//the number of streams of text scrolling down the screen
+#define SCALE 1 			//the scale at which each char in the stream is rendered
+#define V_GAP .8			//the vertical gap between chars in the stream
 
 int init(int width, int height);
 void vert_txt();
@@ -23,7 +23,7 @@ struct strip {
 	float y;
 	float speed;
 	int len;
-	char str[24];
+	char str[32];
 };
 
 //function prototypes
@@ -49,6 +49,7 @@ int main (int argc, char *argv[]) {
 	
 	int i,j;
 	
+	//populate the strip array
 	for (i = 0; i < STRIPS; i++) {
 		
 		int char_width = get_char_width() * SCALE;
@@ -57,7 +58,7 @@ int main (int argc, char *argv[]) {
 		strips[i].speed = (float) (rand() + RAND_MAX * .5) / RAND_MAX * 2.5;
 		strips[i].len = rand() % 19 + 5;
 		
-		//populate str
+		//populate str property
 		for (j = 0; j < strips[i].len; j++) {
 			
 			int r = rand() % 1000;
@@ -94,7 +95,6 @@ int main (int argc, char *argv[]) {
 		
 		check_bounds();
 
-		//draw to the screen
 		SDL_RenderClear(renderer);
 		
 		int i;
@@ -103,11 +103,11 @@ int main (int argc, char *argv[]) {
 		for (i = 0; i < STRIPS; i++) {
 
 			//draw the strips
-			strips[i].y += strips[i].speed;
 			vert_txt(strips[i].str, strips[i].x, (int)strips[i].y);
-			SDL_SetTextureColorMod(font_t, 22, 160, 22);
+			strips[i].y += strips[i].speed;
 		}
 		
+		//draw to the screen
 		SDL_RenderPresent(renderer);
 				
 		//time it takes to render 1 frame in milliseconds
@@ -136,9 +136,24 @@ void vert_txt(char *str, int x, int y) {
 	
 	int i;
 	int char_height = get_char_height();
+	int length = strlen(str);
 	
-	for (i = 0; i < strlen(str); i++) {
+	for (i = 0; i < length; i++) {
+		
+		float tail = (float) i / length;
+		
+		//draw the first few chars with a darker colour
+		if (tail <= .4) {
 			
+			float grad = (float) i / (length * .4);
+			SDL_SetTextureColorMod(font_t, 20, 160 * grad, 20);
+	
+		} else {
+		
+			SDL_SetTextureColorMod(font_t, 20, 160, 20);
+			
+		}
+		
 		//draw the last element a different colour
 		if (i == strlen(str) - 1) {
 
@@ -201,7 +216,7 @@ int init(int width, int height) {
 	SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN, &window, &renderer);
 	
 	//set up font texture
-	font_t = load_font("font.bmp",renderer);
+	font_t = load_font("mtx.bmp",renderer);
 	
 	if (window == NULL) { 
 		

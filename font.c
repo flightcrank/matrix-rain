@@ -6,7 +6,7 @@
 
 //The width and height of each char in the font image
 #define CHAR_WIDTH 16
-#define CHAR_HEIGHT 30
+#define CHAR_HEIGHT 25
 
 float scale = 1;
 
