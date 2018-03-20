@@ -47,12 +47,9 @@ void font_set_scale(float s){
 }
 
 void print_str(char *str, int x, int y, SDL_Renderer *rend, SDL_Texture *tex) {
-	
-	int i;
-	
-	for(i = 0; i < strlen(str); i++) {
-		
-		print_char(str[i], x, y, rend, tex);
+
+    while (*str != '\0') {
+		print_char(*str++, x, y, rend, tex);
 		x += CHAR_WIDTH * scale;
 	}
 }
@@ -61,7 +58,8 @@ void print_str(char *str, int x, int y, SDL_Renderer *rend, SDL_Texture *tex) {
 void print_char(char c, int x, int y, SDL_Renderer *rend, SDL_Texture *tex) {
 	
 	//string representation of the layout of the bitmap font
-	char *cmap = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()[];':\",./\\?";
+    const char cmap[] = " abcdefghijklmnopqrstuvwxyz"
+                        "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()[];':\",./\\?";
 	
 	int i;
 	
@@ -71,7 +69,7 @@ void print_char(char c, int x, int y, SDL_Renderer *rend, SDL_Texture *tex) {
 	src.x = 0;
 	src.y = 0;
 	
-	for (i = 0; i < strlen(cmap); i++) {
+	for (i = 0; i < sizeof cmap; i++) {
 	
 		if (c == cmap[i]) {
 		
@@ -81,11 +79,13 @@ void print_char(char c, int x, int y, SDL_Renderer *rend, SDL_Texture *tex) {
 		src.x += src.w;
 	}
 
-	SDL_Rect dest;
-	dest.w = src.w * scale;
-	dest.h = src.h * scale;
-	dest.x = x;
-	dest.y = y;
+	if (i < sizeof cmap) { // if character match found
+        SDL_Rect dest;
+        dest.w = src.w * scale;
+        dest.h = src.h * scale;
+        dest.x = x;
+        dest.y = y;
 
-	SDL_RenderCopy(rend, tex, &src, &dest);
+        SDL_RenderCopy(rend, tex, &src, &dest);
+    }
 }
