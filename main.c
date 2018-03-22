@@ -1,17 +1,17 @@
 
 //main.c
 
-//Using libs SDL, glib.c 
+//Using libs SDL, glibc 
 #include <SDL.h>	//SDL version 2.0
 #include <stdio.h>
 #include <stdlib.h>
 #include "font.h"
 
-#define SCREEN_WIDTH 1280	//window height
-#define SCREEN_HEIGHT 720	//window width
-#define STRIPS 250			//the number of streams of text scrolling down the screen
-#define SCALE 1 			//the scale at which each char in the stream is rendered
-#define V_GAP .8			//the vertical gap between chars in the stream
+#define SCREEN_WIDTH 1280		//window height
+#define SCREEN_HEIGHT 720		//window width
+#define STRIPS 250				//the number of streams of text scrolling down the screen
+#define SCALE 1					//the scale at which each char in the stream is rendered
+#define V_GAP .8				//the vertical gap between chars in the stream
 
 int init(int width, int height);
 void vert_txt();
@@ -27,9 +27,9 @@ struct strip {
 };
 
 //function prototypes
-SDL_Window* window = NULL;			//The window we'll be rendering to
-SDL_Renderer *renderer;				//The renderer SDL will use to draw to the screen
-SDL_Texture *font_t;				//The texture that holds the font
+SDL_Window* window = NULL;		//The window we'll be rendering to
+SDL_Renderer *renderer;			//The renderer SDL will use to draw to the screen
+SDL_Texture *font_t;			//The texture that holds the font
 struct strip strips[STRIPS];		//the array that holds the strips of text and its properties
 
 int main (int argc, char *argv[]) {
@@ -46,13 +46,14 @@ int main (int argc, char *argv[]) {
 	
 	//set the scale of the font
 	font_set_scale(SCALE);
+	font_set_v_gap(V_GAP);
 	
 	int i,j;
 	
 	//populate the strip array
 	for (i = 0; i < STRIPS; i++) {
 		
-		int char_width = get_char_width() * SCALE;
+		int char_width = get_char_width();
 		strips[i].x = (rand() % SCREEN_WIDTH / char_width) * char_width;
 		strips[i].y = (strips[i].len * get_char_height()) * -1;
 		strips[i].speed = (float) (rand() + RAND_MAX * .5) / RAND_MAX * 2.5;
@@ -164,7 +165,7 @@ void vert_txt(char *str, int x, int y) {
 		}
 
 		print_char(str[i], x, y, renderer, font_t);
-		y += char_height * SCALE * V_GAP;
+		y += char_height;
 		
 		
 		if (rand() % 1000 < 10) {
@@ -199,7 +200,7 @@ void check_bounds() {
 		if (strips[i].y >= SCREEN_HEIGHT) {
 			
 			int char_width = get_char_width() * SCALE;
-			strips[i].y = (strips[i].len * get_char_height() * SCALE * V_GAP) * -1;
+			strips[i].y = (strips[i].len * get_char_height()) * -1;
 			strips[i].x = (rand() % SCREEN_WIDTH / char_width) * char_width;
 		}
 	}

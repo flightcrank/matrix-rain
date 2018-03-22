@@ -9,6 +9,8 @@
 #define CHAR_HEIGHT 25
 
 float scale = 1;
+float v_gap = 1;
+float h_gap = 1;
 
 SDL_Texture * load_font(char *file, SDL_Renderer *rend) {
 
@@ -33,17 +35,27 @@ SDL_Texture * load_font(char *file, SDL_Renderer *rend) {
 
 int get_char_width() {
 	
-	return CHAR_WIDTH;	
+	return CHAR_WIDTH * scale * h_gap;	
 }
 
 int get_char_height() {
 
-	return CHAR_HEIGHT;
+	return CHAR_HEIGHT * scale * v_gap;
 }
 
-void font_set_scale(float s){
+void font_set_scale(float v) {
 	
-	scale = s;	
+	scale = v;	
+}
+
+void font_set_v_gap(float v){
+
+	v_gap = v;
+}
+
+void font_set_h_gap(float v) {
+	
+	h_gap = v;
 }
 
 void print_str(char *str, int x, int y, SDL_Renderer *rend, SDL_Texture *tex) {

@@ -9,7 +9,11 @@ int get_char_width();
 
 int get_char_height();
 
-void font_set_scale(float s);
+void font_set_scale(float v);
+
+void font_set_v_gap(float v);
+
+void font_set_h_gap(float v);
 
 void print_str(char *str, int x, int y, SDL_Renderer *rend, SDL_Texture *tex);
 
