@@ -6,9 +6,9 @@
 #include <stdlib.h>
 #include "font.h"
 
-#define SCREEN_WIDTH 640		//window height
-#define SCREEN_HEIGHT 480		//window width
-#define NUM_STREAM 50			//number of chars streaming down
+#define SCREEN_WIDTH 1290		//window height
+#define SCREEN_HEIGHT 720		//window width
+#define NUM_STREAM 150			//number of chars streaming down
 #define SCALE .9					//scale at which the chars are drawn
 #define H_GAP .9				//gap between the chars horizontally
 #define V_GAP .7				//gap between the chars vertically

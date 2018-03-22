@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include "font.h"
 
-#define SCREEN_WIDTH 1280		//window height
+#define SCREEN_WIDTH 1290		//window height
 #define SCREEN_HEIGHT 720		//window width
 #define STRIPS 250				//the number of streams of text scrolling down the screen
 #define SCALE 1					//the scale at which each char in the stream is rendered
