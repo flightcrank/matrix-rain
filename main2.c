@@ -6,12 +6,12 @@
 #include <stdlib.h>
 #include "font.h"
 
-#define SCREEN_WIDTH 1290		//window height
-#define SCREEN_HEIGHT 720		//window width
-#define NUM_STREAM 150			//number of chars streaming down
-#define SCALE .9					//scale at which the chars are drawn
-#define H_GAP .9				//gap between the chars horizontally
-#define V_GAP .7				//gap between the chars vertically
+#define SCREEN_WIDTH 640	//window height
+#define SCREEN_HEIGHT 480	//window width
+#define STREAM_FACTOR 1.5	//number of chars streaming down
+#define SCALE 1			//scale at which the chars are drawn
+#define H_GAP .9		//gap between the chars horizontally
+#define V_GAP .7		//gap between the chars vertically
 
 //function prototypes
 int init(int w, int h);
@@ -26,10 +26,9 @@ struct stream {
 };
 
 //globals
-SDL_Window* window = NULL;		//The window we'll be rendering to
-SDL_Renderer *renderer;			//The renderer SDL will use to draw to the screen
-SDL_Texture *font_t;			//The texture that holds the font
-struct stream streams[NUM_STREAM];
+SDL_Window* window = NULL;	//The window we'll be rendering to
+SDL_Renderer *renderer;		//The renderer SDL will use to draw to the screen
+SDL_Texture *font_t;		//The texture that holds the font
 
 int main (int argc, char *argv[]) {
 		
@@ -44,9 +43,17 @@ int main (int argc, char *argv[]) {
 	font_set_v_gap(V_GAP);
 	font_set_h_gap(H_GAP);
 	
+	int width, height;
+	
+	SDL_GetWindowSize(window, &width, &height);
+	
+	printf("window dimentions w = %d, h = %d\n", width, height);
+	
 	//calculate the dimensions of the  two arrays that will hold the chars and their alpha values respectively 
-	int cols = SCREEN_WIDTH / get_char_width();
-	int rows = SCREEN_HEIGHT / get_char_height();		
+	int cols = width / get_char_width();
+	int rows = height / get_char_height();		
+	
+	printf("matrix dimentions w = %d, h = %d\n", cols, rows);
 	
 	char char_grid[cols][rows];
 	unsigned char alpha_grid[cols][rows];
@@ -80,8 +87,14 @@ int main (int argc, char *argv[]) {
 		}
 	}
 	
+	//array to hold all the streams
+	int num_streams = cols * STREAM_FACTOR;
+	struct stream streams[num_streams];
+	
+	printf("streams %d\n", num_streams);
+	
 	//populate streams
-	for (x = 0; x < NUM_STREAM; x++) {
+	for (x = 0; x < num_streams; x++) {
 	
 		streams[x].x = rand() % cols;
 		streams[x].y = 0;
@@ -128,8 +141,13 @@ int main (int argc, char *argv[]) {
 					SDL_SetTextureColorMod(font_t, 20, 160, 20);
 				}
 				
-				SDL_SetTextureAlphaMod(font_t, val);
-				print_char(char_grid[x][y], px, py, renderer, font_t);
+				//improve performance not rendering the char texture if the cell has a low alpha value
+				if (val > 45) {
+				
+					SDL_SetTextureAlphaMod(font_t, val);
+					print_char(char_grid[x][y], px, py, renderer, font_t);
+				}
+				
 				py += get_char_height();
 			}
 			
@@ -140,7 +158,7 @@ int main (int argc, char *argv[]) {
 		int i;
 		
 		//render the streams
-		for (i = 0; i < NUM_STREAM; i++) {
+		for (i = 0; i < num_streams; i++) {
 			
 			if (streams[i].y > rows) {
 				
