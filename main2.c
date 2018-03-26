@@ -6,15 +6,15 @@
 #include <stdlib.h>
 #include "font.h"
 
-#define SCREEN_WIDTH 640	//window height
-#define SCREEN_HEIGHT 480	//window width
+#define SCREEN_WIDTH 1290	//window height
+#define SCREEN_HEIGHT 720	//window width
 #define STREAM_FACTOR 1.5	//number of chars streaming down
 #define SCALE 1			//scale at which the chars are drawn
 #define H_GAP .9		//gap between the chars horizontally
 #define V_GAP .7		//gap between the chars vertically
 
 //function prototypes
-int init(int w, int h);
+int init(int w, int h, int argc, char *args[]);
 void fade(int col, int row, unsigned char a[col][row]);
 
 //structure to define the stream of chars cascading down the window
@@ -30,10 +30,10 @@ SDL_Window* window = NULL;	//The window we'll be rendering to
 SDL_Renderer *renderer;		//The renderer SDL will use to draw to the screen
 SDL_Texture *font_t;		//The texture that holds the font
 
-int main (int argc, char *argv[]) {
+int main (int argc, char *args[]) {
 		
 	//SDL Window setup
-	if (init(SCREEN_WIDTH, SCREEN_HEIGHT) == 1) {
+	if (init(SCREEN_WIDTH, SCREEN_HEIGHT, argc, args) == 1) {
 		
 		return 0;
 	}
@@ -215,7 +215,7 @@ void fade(int col, int row, unsigned char a[col][row]) {
 	}
 }
 
-int init(int width, int height) {
+int init(int width, int height, int argc, char *args[]) {
 
 	//Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -225,8 +225,21 @@ int init(int width, int height) {
 		return 1;
 	} 
 	
-	//Create window	
-	SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN, &window, &renderer);
+	
+	int i;
+	
+	for (i = 0; i < argc; i++) {
+		
+		//Create window	
+		if(strcmp(args[i], "-f")) {
+			
+			SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN, &window, &renderer);
+		
+		} else {
+		
+			SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN_DESKTOP, &window, &renderer);
+		}
+	}
 	
 	//set up font texture
 	font_t = load_font("mtx.bmp",renderer);
